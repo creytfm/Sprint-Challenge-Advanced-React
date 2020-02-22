@@ -1,12 +1,67 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import Search from "./Search"
+import "./styles.css";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+function App() {
+  const [darkMode, setDarkMode] = React.useState(getInitialMode());
+  React.useEffect(() => {
+    localStorage.setItem("dark", JSON.stringify(darkMode));
+  }, [darkMode]);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+  function getInitialMode() {
+    const isReturningUser = "dark" in localStorage;
+    const savedMode = JSON.parse(localStorage.getItem("dark"));
+    const userPrefersDark = getPrefColorScheme();
+    // if mode was saved --> dark / light
+    if (isReturningUser) {
+      return savedMode;
+      // if preferred color scheme is dark --> dark
+    } else if (userPrefersDark) {
+      return true;
+      // otherwise --> light
+    } else {
+      return false;
+    }
+    // return savedMode || false;
+  }
+
+  function getPrefColorScheme() {
+    if (!window.matchMedia) return;
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  return (
+    <div className={darkMode ? "dark-mode" : "light-mode"}>
+      <nav>
+        <div className="toggle-container">
+      
+          <span className="toggle">
+            <input
+              checked={darkMode}
+              onChange={() => setDarkMode(prevMode => !prevMode)}
+              id="checkbox"
+              className="checkbox"
+              type="checkbox"
+            />
+            <label htmlFor="checkbox" />
+          </span>
+         
+          <button onClick={() => setDarkMode(prevMode => !prevMode)}>
+          Toggle Dark Mode
+        </button>
+        </div>
+      </nav>
+      <main>
+        <Search/>
+        <h1>{darkMode ? "Dark Mode" : "Light Mode"}</h1>
+       
+      </main>
+    </div>
+  );
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App/>, rootElement);
+
