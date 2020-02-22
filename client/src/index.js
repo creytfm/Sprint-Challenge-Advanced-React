@@ -53,11 +53,11 @@ function App() {
         </button>
         </div>
       </nav>
-      <main>
-        <Search/>
+      <Search>
+        
         <h1>{darkMode ? "Dark Mode" : "Light Mode"}</h1>
        
-      </main>
+      </Search>
     </div>
   );
 }
